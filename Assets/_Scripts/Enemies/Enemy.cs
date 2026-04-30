@@ -67,6 +67,11 @@ public class Enemy : MonoBehaviour
 
     void ReachBase()
     {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.TakeBaseDamage(1);
+        }
+
         Destroy(gameObject);
     }
 
@@ -77,6 +82,10 @@ public class Enemy : MonoBehaviour
 
         if (currentHealth <= 0)
         {
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.AddGold(data.goldReward);
+            }
             Destroy(gameObject);
         }
     }

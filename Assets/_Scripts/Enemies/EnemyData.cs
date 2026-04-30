@@ -12,4 +12,5 @@ public class EnemyData : ScriptableObject
     public int attackCost; // Вартість для бюджету Атакуючого
     [Header("Special Abilities")]
     public bool isImmuneToSlow;
+    public int goldReward;
 }
