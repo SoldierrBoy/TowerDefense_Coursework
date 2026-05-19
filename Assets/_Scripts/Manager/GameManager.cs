@@ -11,7 +11,8 @@ public class GameManager : MonoBehaviour
 
     [Header("Economy")]
     public int currentGold = 1000;
-
+    [Header("Rounds")]
+    public int currentRound = 0;
     [Header("UI References")]
     public TextMeshProUGUI goldText;  // Посилання на твій об'єкт GoldText
     public Slider healthSlider;       // Посилання на твій об'єкт HealthSlider
