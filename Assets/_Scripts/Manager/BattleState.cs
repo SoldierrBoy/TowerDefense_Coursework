@@ -14,11 +14,24 @@ public class BattleState : IState
 
     public void Enter()
     {
-        Debug.Log("--- [STATE MACHINE]: УСПІШНО УВІЙШЛИ В BATTLE STATE! ---");
-        Debug.Log("Вороги спавняться, вежі стріляють. Чекаємо завершення хвилі...");
+        Time.timeScale = 1f;
 
-        // Запускаємо тестову корутину через наш синглтон машини станів
-        GameStateMachine.Instance.StartCoroutine(TemporaryWaveRoutine());
+        Debug.Log("--- [STATE MACHINE]: УСПІШНО УВІЙШЛИ В BATTLE STATE! ---");
+        Debug.Log("Кнопка старту схована. Надаємо команду спавнеру...");
+
+        // Знаходимо наш спавнер на сцені
+        EnemySpawner spawner = Object.FindAnyObjectByType<EnemySpawner>();
+
+        if (spawner != null)
+        {
+            // Запускаємо реальну хвилю ворогів!
+            spawner.StartEnemyWave();
+        }
+        else
+        {
+            Debug.LogError("ПОМИЛКА: Не знайдено EnemySpawner на сцені! Перевірка автоматично повертає в підготовку.");
+            _stateMachine.ChangeState(new PreparationState(_stateMachine));
+        }
     }
 
     public void Update()
@@ -31,13 +44,4 @@ public class BattleState : IState
         Debug.Log("--- [STATE MACHINE]: ВИХІД З BATTLE STATE ---");
     }
 
-    // Тимчасова корутина для тесту
-    private System.Collections.IEnumerator TemporaryWaveRoutine()
-    {
-        yield return new WaitForSeconds(5f);
-        Debug.Log("Хвиля закінчилася (тестові 5 секунд минули)!");
-
-        // Повертаємося у фазу підготовки до наступного раунду
-        _stateMachine.ChangeState(new PreparationState(_stateMachine));
-    }
 }
