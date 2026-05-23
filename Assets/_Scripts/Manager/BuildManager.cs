@@ -30,6 +30,7 @@ public class BuildManager : MonoBehaviour
     {
         if (towerPanel != null) towerPanel.SetActive(false);
     }
+    
     void Update()
     {
         // Якщо панель магазину активна І гравець натиснув Esc
@@ -75,15 +76,11 @@ public class BuildManager : MonoBehaviour
         }
 
         GameManager.Instance.AddGold(-cost);
-
-        GameObject newTower = Instantiate(towerToBuild, selectedNode.transform.position, Quaternion.identity);
         
-        SpriteRenderer towerVisual = newTower.GetComponentInChildren<SpriteRenderer>();
-        if (towerVisual != null)
-        {
-            towerVisual.transform.localPosition = Vector3.zero;
-        }
+        // 1. Створюємо вежу на сцені
+        GameObject newTower = Instantiate(towerToBuild, selectedNode.transform.position, Quaternion.identity);
 
+        
         selectedNode.towerOnThisNode = newTower; 
 
         // ВІДНОВЛЕННЯ ГРИ: Повертаємо нормальну швидкість часу (1) після покупки
