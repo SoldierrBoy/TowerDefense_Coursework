@@ -43,6 +43,12 @@ public class BuildManager : MonoBehaviour
     // Викликається при кліку на земляну пляму (Node)
     public void SelectNode(Node node)
     {
+        // ЗАХИСТ: Якщо базу знищено або гра виграна, не даємо відкрити магазин
+        if (GameManager.Instance != null && (GameManager.Instance.baseHealth <= 0 || GameManager.Instance.currentRound > 15))
+        {
+            return;
+        }
+
         selectedNode = node;
         
         if (towerPanel != null) towerPanel.SetActive(true);
@@ -57,6 +63,14 @@ public class BuildManager : MonoBehaviour
     public void BuildTower(int towerIndex)
     {
         if (selectedNode == null) return;
+
+        // ЗАХИСТ ВІД КЛІКІВ ПІСЛЯ КІНЦЯ ГРИ:
+        // Якщо ХП бази <= 0 або раундів більше 15, блокуємо будівництво і відновлення часу
+        if (GameManager.Instance != null && (GameManager.Instance.baseHealth <= 0 || GameManager.Instance.currentRound > 15))
+        {
+            if (towerPanel != null) towerPanel.SetActive(false);
+            return;
+        }
 
         GameObject towerToBuild = null;
         int cost = 0;
@@ -80,7 +94,6 @@ public class BuildManager : MonoBehaviour
         // 1. Створюємо вежу на сцені
         GameObject newTower = Instantiate(towerToBuild, selectedNode.transform.position, Quaternion.identity);
 
-        
         selectedNode.towerOnThisNode = newTower; 
 
         // ВІДНОВЛЕННЯ ГРИ: Повертаємо нормальну швидкість часу (1) після покупки
@@ -90,10 +103,15 @@ public class BuildManager : MonoBehaviour
         if (towerPanel != null) towerPanel.SetActive(false);
     }
 
-    // Додаткова функція: якщо захочете зробити кнопку "Закрити магазин" (хрестик)
+    // Додаткова funkція: якщо захочете зробити кнопку "Закрити магазин" (хрестик)
     public void CloseShopWithoutBuying()
     {
-        Time.timeScale = 1f; // Знімаємо з паузи
+        // Знімаємо з паузи тільки якщо гра ще триває!
+        if (GameManager.Instance != null && GameManager.Instance.baseHealth > 0 && GameManager.Instance.currentRound <= 15)
+        {
+            Time.timeScale = 1f; 
+        }
+        
         selectedNode = null;
         if (towerPanel != null) towerPanel.SetActive(false);
     }

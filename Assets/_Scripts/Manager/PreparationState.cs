@@ -14,7 +14,15 @@ public class PreparationState : IState
 
     public void Enter()
     {
-        // ДОДАЄМО ЦЕЙ РЯДОК: Оновлюємо екран на фазу підготовки
+        // 1. ПЕРЕВІРКА НА ПЕРЕМОГУ: Якщо гравець вже пройшов 15 раундів
+        if (GameManager.Instance != null && GameManager.Instance.currentRound > 15)
+        {
+            Debug.Log("--- [PREPARATION STATE]: 15 раундів позаду! Перемикаємо на WinState. ---");
+            _stateMachine.ChangeState(new WinState(_stateMachine));
+            return; // Зупиняємо виконання методу Enter, щоб не починати новий раунд!
+        }
+
+        // Оновлюємо екран на фазу підготовки
         if (GameManager.Instance != null)
         {
             GameManager.Instance.UpdatePhaseUI("ПІДГОТОВКА", "Підготуй оборону", Color.white);
@@ -50,7 +58,6 @@ public class PreparationState : IState
     public void StartBattle()
     {
         // Перемикаємо машину на стан бою (BattleState)
-        // Його ми напишемо наступним кроком!
         _stateMachine.ChangeState(new BattleState(_stateMachine));
     }
 }
