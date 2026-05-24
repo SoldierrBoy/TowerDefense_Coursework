@@ -16,9 +16,9 @@ public class GameManager : MonoBehaviour
     [Header("Rounds")]
     public int currentRound = 0;
 
-    [Header("Старі UI посилання колеги")]
-    public TextMeshProUGUI goldText;  // Посилання на старий GoldText
-    public Slider healthSlider;       // Посилання на старий HealthSlider
+    [Header("ShopPanel UI")]
+    public TextMeshProUGUI goldText;  
+    public Slider healthSlider;       
 
     [Header("Нові UI посилання Раундів")]
     public TextMeshProUGUI newGoldText;       // Сюди кидаємо нове золото (жовте)
@@ -71,7 +71,7 @@ public class GameManager : MonoBehaviour
         // --- 1. Оновлення СТАРОГО UI (колеги) ---
         if (goldText != null)
         {
-            goldText.text = "Золото: " + currentGold;
+            goldText.text = "" + currentGold;
         }
 
         if (healthSlider != null)
