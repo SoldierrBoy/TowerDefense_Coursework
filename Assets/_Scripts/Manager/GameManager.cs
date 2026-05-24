@@ -16,9 +16,9 @@ public class GameManager : MonoBehaviour
     [Header("Rounds")]
     public int currentRound = 0;
 
-    [Header("���� UI ��������� ������")]
-    public TextMeshProUGUI goldText;  // ��������� �� ������ GoldText
-    public Slider healthSlider;       // ��������� �� ������ HealthSlider
+    [Header("ShopPanel UI")]
+    public TextMeshProUGUI goldText;  
+    public Slider healthSlider;       
 
     [Header("��� UI ��������� ������")]
     public TextMeshProUGUI newGoldText;       // ���� ������ ���� ������ (�����)
@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI phaseTitleText;    // ���� ������ ��������� "ϲ��������"
     public TextMeshProUGUI phaseSubText;      // ���� ������ ����������� "ϳ������ �������"
     public TextMeshProUGUI roundProgressText; // ���� ������ ����� "����� 1 / 15"
-    public GameObject endGamePanel; // Сюди закинемо панель з кнопками "Грати знову" / "Меню"
+
     void Awake()
     {
         if (Instance == null) Instance = this;
@@ -84,7 +84,7 @@ public class GameManager : MonoBehaviour
         // --- 1. ��������� ������� UI (������) ---
         if (goldText != null)
         {
-            goldText.text = "������: " + currentGold;
+            goldText.text = "" + currentGold;
         }
 
         if (healthSlider != null)
