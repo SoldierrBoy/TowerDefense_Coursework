@@ -17,13 +17,17 @@ public class WinState : IState
 
         if (GameManager.Instance != null)
         {
-            // Виводимо красивий зелений напис
-            GameManager.Instance.UpdatePhaseUI("ПЕРЕМОГА!", "Ви захистили базу від усіх хвиль!", Color.green);
             
-            // ВМИКАЄМО ПАНЕЛЬ З КНОПКАМИ (Ось цей новий шматок!)
+            
+            // Намагаємося увімкнути панель і перевіряємо, чи вона є
             if (GameManager.Instance.endGamePanel != null)
             {
                 GameManager.Instance.endGamePanel.SetActive(true);
+                Debug.Log("[WinState]: Панель кінця гри успішно активована з коду!");
+            }
+            else
+            {
+                Debug.LogError("[WinState]: ПОМИЛКА! endGamePanel не призначена в GameManager. Перетягни її в Інспекторі!");
             }
         }
         
