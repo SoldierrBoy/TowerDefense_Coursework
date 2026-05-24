@@ -15,7 +15,11 @@ public class BattleState : IState
     public void Enter()
     {
         Time.timeScale = 1f;
-
+        // ДОДАЄМО ЦЕЙ РЯДОК: Оновлюємо екран на фазу бою
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.UpdatePhaseUI("BATTLE", "Вороги наступають!", Color.red);
+        }
         Debug.Log("--- [STATE MACHINE]: УСПІШНО УВІЙШЛИ В BATTLE STATE! ---");
         Debug.Log("Кнопка старту схована. Надаємо команду спавнеру...");
 

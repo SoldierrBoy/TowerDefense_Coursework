@@ -14,9 +14,14 @@ public class PreparationState : IState
 
     public void Enter()
     {
-        // 1. Коли увійшли в підготовку — збільшуємо номер раунду в GameManager
-        GameManager.Instance.currentRound++;
+        // ДОДАЄМО ЦЕЙ РЯДОК: Оновлюємо екран на фазу підготовки
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.UpdatePhaseUI("ПІДГОТОВКА", "Підготуй оборону", Color.white);
+        }
+
         Debug.Log($"--- ФАЗА ПІДГОТОВКИ ДО РАУНДУ {GameManager.Instance.currentRound} ---");
+        GameManager.Instance.currentRound++;
         Debug.Log("Гроші є, вежі ставляться. Натисніть кнопку 'СТАРТ', щоб пішла хвиля.");
 
         // 2. Тут логіка для твого колеги:
