@@ -17,20 +17,18 @@ public class WinState : IState
 
         if (GameManager.Instance != null)
         {
-            
-            
-            // Намагаємося увімкнути панель і перевіряємо, чи вона є
-            if (GameManager.Instance.endGamePanel != null)
+            // Вмикаємо твою нову панель перемоги
+            if (GameManager.Instance.WinPanel != null)
             {
-                GameManager.Instance.endGamePanel.SetActive(true);
-                Debug.Log("[WinState]: Панель кінця гри успішно активована з коду!");
+                GameManager.Instance.WinPanel.SetActive(true);
+                Debug.Log("[WinState]: Екран ПЕРЕМОГИ успішно активовано!");
             }
             else
             {
-                Debug.LogError("[WinState]: ПОМИЛКА! endGamePanel не призначена в GameManager. Перетягни її в Інспекторі!");
+                Debug.LogError("[WinState]: ПОМИЛКА! WinPanel не призначена в GameManager.");
             }
         }
-        
+
         Debug.Log("--- [STATE MACHINE]: ГРАВЕЦЬ ПЕРЕМІГ! ---");
     }
 

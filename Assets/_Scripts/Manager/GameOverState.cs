@@ -11,22 +11,20 @@ public class GameOverState : IState
 
     public void Enter()
     {
-        // Зупиняємо час
+        // Зупиняємо час у грі
         Time.timeScale = 0f;
 
         if (GameManager.Instance != null)
         {
-        
-            
-            // Намагаємося увімкнути панель і перевіряємо, чи вона є
-            if (GameManager.Instance.endGamePanel != null)
+            // Вмикаємо твою нову панель поразки
+            if (GameManager.Instance.LosePanel != null)
             {
-                GameManager.Instance.endGamePanel.SetActive(true);
-                Debug.Log("[GameOverState]: Панель кінця гри успішно активована з коду!");
+                GameManager.Instance.LosePanel.SetActive(true);
+                Debug.Log("[GameOverState]: Екран ПОРАЗКИ успішно активовано!");
             }
             else
             {
-                Debug.LogError("[GameOverState]: ПОМИЛКА! endGamePanel не призначена в GameManager. Перетягни її в Інспекторі!");
+                Debug.LogError("[GameOverState]: ПОМИЛКА! LosePanel не призначена в GameManager.");
             }
         }
 

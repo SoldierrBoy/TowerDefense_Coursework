@@ -94,11 +94,14 @@ public class EnemySpawner : MonoBehaviour
 
     void SpawnEnemy(GameObject prefab)
     {
-        GameObject newEnemy = Instantiate(prefab, transform.position, Quaternion.identity);
+
+        GameObject newEnemy = PoolManager.Instance.Get(prefab, transform.position, Quaternion.identity);
+
         Enemy enemyScript = newEnemy.GetComponent<Enemy>();
         if (enemyScript != null)
         {
             enemyScript.waypoints = waypoints;
+            enemyScript.myPrefab = prefab;
         }
 
         enemiesLeftAlive++;

@@ -2,12 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IceProjectile : MonoBehaviour
+public class IceProjectile : Projectile
 {
     private Enemy target;
     private float damage;
     private float slowFactor;
     public float speed = 8f;
+
+    private void OnEnable()
+    {
+        TrailRenderer trail = GetComponent<TrailRenderer>();
+        if (trail != null) trail.Clear();
+    }
 
     public void Seek(Enemy _target, float _damage, float _slow)
     {
@@ -18,7 +24,11 @@ public class IceProjectile : MonoBehaviour
 
     void Update()
     {
-        if (target == null) { Destroy(gameObject); return; }
+        if (target == null)
+        {
+            ReturnToPool(); // ЗАМІНЕНО на пул
+            return;
+        }
 
         Vector2 direction = (Vector2)target.transform.position - (Vector2)transform.position;
         float distanceThisFrame = speed * Time.deltaTime;
@@ -37,15 +47,18 @@ public class IceProjectile : MonoBehaviour
 
     void HitTarget()
     {
+
         target.TakeDamage(damage);
 
-        // Додаємо ефект уповільнення, якщо його ще немає
-        if (target.gameObject.GetComponent<SlowEffect>() == null)
+        if (target != null && target.gameObject.activeInHierarchy)
         {
-            SlowEffect effect = target.gameObject.AddComponent<SlowEffect>();
-            effect.Initialize(slowFactor, 6f); // Уповільнення на 3 секунди
+            if (target.gameObject.GetComponent<SlowEffect>() == null)
+            {
+                SlowEffect effect = target.gameObject.AddComponent<SlowEffect>();
+                effect.Initialize(slowFactor, 6f);
+            }
         }
 
-        Destroy(gameObject);
+        ReturnToPool();
     }
 }

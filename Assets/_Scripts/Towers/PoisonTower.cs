@@ -14,28 +14,25 @@ public class PoisonTower : MonoBehaviour
     private float fireCountdown = 0f;
     private List<Enemy> enemiesInRange = new List<Enemy>();
     private Enemy currentTarget;
+
     void Update()
     {
-        // 1. Оновлюємо ціль (шукаємо найближчу)
         UpdateTarget();
 
         if (currentTarget != null)
         {
-            // 2. Ось тут використовується fireCountdown!
-            // Він зменшується кожну секунду
             fireCountdown -= Time.deltaTime;
 
             if (fireCountdown <= 0f)
             {
                 Shoot();
-                // Скидаємо таймер згідно з темпом стрільби
                 fireCountdown = 1f / fireRate;
             }
         }
     }
+
     void UpdateTarget()
     {
-        // Очищуємо список від мертвих ворогів
         enemiesInRange.RemoveAll(e => e == null);
 
         if (enemiesInRange.Count == 0)
@@ -44,7 +41,6 @@ public class PoisonTower : MonoBehaviour
             return;
         }
 
-        // Шукаємо найближчого
         float shortestDistance = Mathf.Infinity;
         Enemy nearestEnemy = null;
 
@@ -60,16 +56,25 @@ public class PoisonTower : MonoBehaviour
 
         currentTarget = nearestEnemy;
     }
-    
+
     void Shoot()
     {
-        if (currentTarget == null) return; // Стріляємо тільки якщо є ціль
+        if (currentTarget == null) return;
 
-        GameObject projGO = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
+        // --- ЗМІНЕНО ДЛЯ OBJECT POOLING ---
+        // Замість Instantiate беремо отруйну колбу/снаряд з PoolManager
+        GameObject projGO = PoolManager.Instance.Get(projectilePrefab, firePoint.position, Quaternion.identity);
+
+        // Зв'язуємо з базовим класом Projectile
+        Projectile projectileScript = projGO.GetComponent<Projectile>();
+        if (projectileScript != null)
+        {
+            projectileScript.myPrefab = projectilePrefab;
+        }
+
         PoisonProjectile proj = projGO.GetComponent<PoisonProjectile>();
-
         if (proj != null)
-            proj.Seek(currentTarget, impactDamage, poisonDamage); // Використовуємо вибрану ціль
+            proj.Seek(currentTarget, impactDamage, poisonDamage);
     }
 
     private void OnTriggerEnter2D(Collider2D other)

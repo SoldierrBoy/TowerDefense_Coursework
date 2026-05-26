@@ -32,38 +32,25 @@ public class FreezerTower : MonoBehaviour
         }
     }
 
-    /*void UpdateTarget()
-    {
-        enemiesInRange.RemoveAll(e => e == null);
-
-        if (enemiesInRange.Count == 0) { currentTarget = null; return; }
-
-        float shortestDistance = Mathf.Infinity;
-        Enemy nearestEnemy = null;
-
-        foreach (Enemy enemy in enemiesInRange)
-        {
-            float distanceToEnemy = Vector2.Distance(transform.position, enemy.transform.position);
-            if (distanceToEnemy < shortestDistance)
-            {
-                shortestDistance = distanceToEnemy;
-                nearestEnemy = enemy;
-            }
-        }
-        currentTarget = nearestEnemy;
-    }*/
     void UpdateTarget()
     {
-        enemiesInRange.RemoveAll(e => e == null);
+        // 1. Видаляємо тих, хто null, або вже спить у пулі
+        enemiesInRange.RemoveAll(e => e == null || !e.gameObject.activeSelf);
 
         if (enemiesInRange.Count == 0) { currentTarget = null; return; }
 
         float shortestDistance = Mathf.Infinity;
         Enemy nearestNotSlowedEnemy = null;
-        Enemy nearestAnyEnemy = null; // Про всяк випадок, якщо всі вже сповільнені
+        Enemy nearestAnyEnemy = null;
 
         foreach (Enemy enemy in enemiesInRange)
         {
+
+            if (enemy.data != null && enemy.data.isImmuneToSlow)
+            {
+                continue; 
+            }
+
             float distanceToEnemy = Vector2.Distance(transform.position, enemy.transform.position);
 
             // Спочатку шукаємо того, хто НЕ сповільнений
@@ -76,15 +63,12 @@ public class FreezerTower : MonoBehaviour
                 }
             }
 
-            // Паралельно запам'ятовуємо просто найближчого (на випадок, якщо всі сповільнені)
             if (nearestAnyEnemy == null || distanceToEnemy < Vector2.Distance(transform.position, nearestAnyEnemy.transform.position))
             {
                 nearestAnyEnemy = enemy;
             }
         }
 
-        // Якщо знайшли несповільненого — стріляємо в нього. 
-        // Якщо таких немає — стріляємо в просто найближчого.
         if (nearestNotSlowedEnemy != null)
         {
             currentTarget = nearestNotSlowedEnemy;
@@ -94,9 +78,20 @@ public class FreezerTower : MonoBehaviour
             currentTarget = nearestAnyEnemy;
         }
     }
+
     void Shoot()
     {
-        GameObject projGO = Instantiate(iceProjectilePrefab, firePoint.position, Quaternion.identity);
+        // --- ЗМІНЕНО ДЛЯ OBJECT POOLING ---
+        // Замість Instantiate беремо крижаний снаряд з PoolManager
+        GameObject projGO = PoolManager.Instance.Get(iceProjectilePrefab, firePoint.position, Quaternion.identity);
+
+        // Зв'язуємо з базовим класом Projectile
+        Projectile projectileScript = projGO.GetComponent<Projectile>();
+        if (projectileScript != null)
+        {
+            projectileScript.myPrefab = iceProjectilePrefab;
+        }
+
         IceProjectile proj = projGO.GetComponent<IceProjectile>();
         if (proj != null) proj.Seek(currentTarget, damage, slowFactor);
     }

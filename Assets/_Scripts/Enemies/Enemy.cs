@@ -4,22 +4,28 @@ using UnityEngine.UI;
 public class Enemy : MonoBehaviour
 {
     public EnemyData data;
-    public Transform[] waypoints; // [cite: 9, 42]
+    public Transform[] waypoints;
 
     [Header("UI Settings")]
-    public Image healthFill; // 
+    public Image healthFill;
+
+    [HideInInspector] public GameObject myPrefab; // Посилання на рідний префаб для пулу
 
     private float currentHealth;
+    public float CurrentHealth => currentHealth;
     private int currentWaypointIndex = 0;
     private float currentSpeed;
 
-    void Start()
+    // ВАЖЛИВО: Замість Start використовуємо OnEnable.
+    // Цей метод викликається АВТОМАТИЧНО щоразу, коли об'єкт робить SetActive(true)
+    void OnEnable()
     {
         if (data != null)
         {
-            currentHealth = data.health; // 
+            currentHealth = data.health;
             currentSpeed = data.speed;
-            UpdateHealthBar(); // 
+            currentWaypointIndex = 0; // Скидаємо індекс точок на початок!
+            UpdateHealthBar();
         }
     }
 
@@ -39,7 +45,6 @@ public class Enemy : MonoBehaviour
     void Move()
     {
         Transform target = waypoints[currentWaypointIndex];
-        // Рух до наступної точки шляху за ТЗ 
         transform.position = Vector2.MoveTowards(transform.position, target.position, currentSpeed * Time.deltaTime);
 
         if (Vector2.Distance(transform.position, target.position) < 0.1f)
@@ -50,7 +55,6 @@ public class Enemy : MonoBehaviour
 
     public void SetSpeed(float newSpeed)
     {
-        // Перевірка на імунітет до уповільнення (наприклад, для Ghost за ТЗ) 
         if (data != null && data.isImmuneToSlow)
         {
             currentSpeed = data.speed;
@@ -69,31 +73,31 @@ public class Enemy : MonoBehaviour
     {
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.TakeBaseDamage(1); // База отримує урон 
+            GameManager.Instance.TakeBaseDamage(1);
         }
 
-        // --- ДОДАЄМО: Сповіщаємо спавнер перед видаленням моба ---
         NotifySpawner();
 
-        Destroy(gameObject);
+        // ЗАМІСТЬ DESTROY ПОКЛИКАЄМО ПУЛ:
+        ReturnToPool();
     }
 
     public void TakeDamage(float damage)
     {
-        currentHealth -= damage; // 
-        UpdateHealthBar(); // 
+        currentHealth -= damage;
+        UpdateHealthBar();
 
         if (currentHealth <= 0)
         {
             if (GameManager.Instance != null)
             {
-                GameManager.Instance.AddGold(data.goldReward); // Нараховуємо золото за вбивство за ТЗ [cite: 14, 50]
+                GameManager.Instance.AddGold(data.goldReward);
             }
 
-            // --- ДОДАЄМО: Сповіщаємо спавнер перед видаленням моба ---
             NotifySpawner();
 
-            Destroy(gameObject);
+            // ЗАМІСТЬ DESTROY ПОКЛИКАЄМО ПУЛ:
+            ReturnToPool();
         }
     }
 
@@ -105,13 +109,35 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    // Внутрішній допоміжний метод, щоб не дублювати код
     private void NotifySpawner()
     {
-        EnemySpawner spawner = Object.FindAnyObjectByType<EnemySpawner>();
+
+        EnemySpawner spawner = FindAnyObjectByType<EnemySpawner>();
         if (spawner != null)
         {
-            spawner.EnemyDestroyed(); // Зменшуємо лічильник живих мобів
+            spawner.EnemyDestroyed();
+            return; 
+        }
+
+        StressTestSpawner testSpawner = FindAnyObjectByType<StressTestSpawner>();
+        if (testSpawner != null)
+        {
+            testSpawner.EnemyDestroyed();
+        }
+    }
+
+    // Новий внутрішній метод для безпечного повернення в пул
+    private void ReturnToPool()
+    {
+        if (myPrefab != null && PoolManager.Instance != null)
+        {
+            // Ховаємо об'єкт у заначку
+            PoolManager.Instance.Release(myPrefab, gameObject);
+        }
+        else
+        {
+            // Якщо раптом щось пішло не так або тестуємо без пулу — просто видаляємо
+            Destroy(gameObject);
         }
     }
 }

@@ -2,11 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Arrow : MonoBehaviour
+public class Arrow : Projectile
 {
     private Enemy target;
     private float damage;
     public float speed = 7f;
+
+    private void OnEnable()
+    {
+        // Якщо на стрілі є шлейф (TrailRenderer), скидаємо його, щоб він не тягнувся через всю карту
+        TrailRenderer trail = GetComponent<TrailRenderer>();
+        if (trail != null) trail.Clear();
+    }
 
     public void Seek(Enemy _target, float _damage)
     {
@@ -18,7 +25,7 @@ public class Arrow : MonoBehaviour
     {
         if (target == null)
         {
-            Destroy(gameObject);
+            ReturnToPool(); // Замінено на пул
             return;
         }
 
@@ -33,7 +40,6 @@ public class Arrow : MonoBehaviour
 
         transform.Translate(direction.normalized * distanceThisFrame, Space.World);
 
-        // Поворот стріли за напрямком польоту
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
@@ -41,6 +47,6 @@ public class Arrow : MonoBehaviour
     void HitTarget()
     {
         target.TakeDamage(damage);
-        Destroy(gameObject);
+        ReturnToPool();
     }
 }

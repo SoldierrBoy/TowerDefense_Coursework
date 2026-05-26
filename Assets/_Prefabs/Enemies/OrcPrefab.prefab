@@ -211,6 +211,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   healthFill: {fileID: 7013490584599504838}
+  myPrefab: {fileID: 0}
 --- !u!114 &-71956596400356754
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -330,8 +331,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 2.03, y: 9.5}
-  m_SizeDelta: {x: 178, y: 83.5}
+  m_AnchoredPosition: {x: -6, y: 5}
+  m_SizeDelta: {x: 507.6, y: 238.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1401541478868006728
 CanvasRenderer:
@@ -361,7 +362,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 532885f6bfa8ac74984005d14f637198, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 56d43bea0f658654991dabfc2be9a593, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -405,8 +406,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -10, y: 17}
-  m_SizeDelta: {x: 415.37, y: 66.03}
+  m_AnchoredPosition: {x: -6, y: 14.6}
+  m_SizeDelta: {x: 392.83, y: 218.89}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4163648547351627599
 CanvasRenderer:
@@ -436,7 +437,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f916e803dcb28b84d9168ef2ea4b6544, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b965c7a621a310d4da6d017db0589dee, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1

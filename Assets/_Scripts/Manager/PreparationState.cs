@@ -25,7 +25,7 @@ public class PreparationState : IState
         // Оновлюємо екран на фазу підготовки
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.UpdatePhaseUI("ПІДГОТОВКА", "Підготуй оборону", Color.white);
+            GameManager.Instance.UpdatePhaseUI("PREPARATION", "Prepare your defenses", Color.white);
         }
 
         Debug.Log($"--- ФАЗА ПІДГОТОВКИ ДО РАУНДУ {GameManager.Instance.currentRound} ---");

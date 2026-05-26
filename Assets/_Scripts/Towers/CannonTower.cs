@@ -5,7 +5,7 @@ using UnityEngine;
 public class CannonTower : MonoBehaviour
 {
     [Header("Характеристики")]
-    public float damage = 50f;     
+    public float damage = 50f;
     public float fireRate = 0.3f;  // Постріл раз на 3-4 секунди
 
     public GameObject cannonBallPrefab;
@@ -32,20 +32,17 @@ public class CannonTower : MonoBehaviour
 
     void UpdateTarget()
     {
-        enemiesInRange.RemoveAll(e => e == null);
+        enemiesInRange.RemoveAll(e => e == null || !e.gameObject.activeSelf);
         if (enemiesInRange.Count == 0) { currentTarget = null; return; }
 
-        // Нова логіка: шукаємо ворога з найбільшою кількістю HP
         float maxHealth = -1f;
         Enemy strongestEnemy = null;
 
         foreach (Enemy enemy in enemiesInRange)
         {
-            // Перевіряємо здоров'я через  EnemyData або скрипт Enemy
-            
-            if (enemy.data.health > maxHealth)
+            if (enemy.CurrentHealth > maxHealth)
             {
-                maxHealth = enemy.data.health;
+                maxHealth = enemy.CurrentHealth;
                 strongestEnemy = enemy;
             }
         }
@@ -54,7 +51,17 @@ public class CannonTower : MonoBehaviour
 
     void Shoot()
     {
-        GameObject ballGO = Instantiate(cannonBallPrefab, firePoint.position, Quaternion.identity);
+        // --- ЗМІНЕНО ДЛЯ OBJECT POOLING ---
+        // Замість Instantiate беремо ядро з PoolManager
+        GameObject ballGO = PoolManager.Instance.Get(cannonBallPrefab, firePoint.position, Quaternion.identity);
+
+        // Зв'язуємо з базовим класом Projectile
+        Projectile projectileScript = ballGO.GetComponent<Projectile>();
+        if (projectileScript != null)
+        {
+            projectileScript.myPrefab = cannonBallPrefab;
+        }
+
         CannonBall ball = ballGO.GetComponent<CannonBall>();
         if (ball != null) ball.Seek(currentTarget, damage);
     }

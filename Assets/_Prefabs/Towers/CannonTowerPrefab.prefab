@@ -107,7 +107,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1436633137
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: a178c81701dd64b499fe18f94db3ac76, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -131,7 +131,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f5fa4237cc3826418bed6157b320112, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 50
+  damage: 40
   fireRate: 0.3
   cannonBallPrefab: {fileID: 7291716798651118067, guid: 08334afd19afcd445b1987aab1d94fa4, type: 3}
   firePoint: {fileID: 3979222997095821642}

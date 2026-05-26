@@ -2,13 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PoisonProjectile : MonoBehaviour
+public class PoisonProjectile : Projectile
 {
     private Enemy target;
     private float impactDamage;
     private float poisonDamage;
     public float speed = 7f;
-    public float explosionRadius = 2f; // Радіус AoE
+    public float explosionRadius = 2f;
+
+    private void OnEnable()
+    {
+        TrailRenderer trail = GetComponent<TrailRenderer>();
+        if (trail != null) trail.Clear();
+    }
 
     public void Seek(Enemy _target, float _impact, float _poison)
     {
@@ -19,7 +25,11 @@ public class PoisonProjectile : MonoBehaviour
 
     void Update()
     {
-        if (target == null) { Destroy(gameObject); return; }
+        if (target == null)
+        {
+            ReturnToPool(); 
+            return;
+        }
 
         Vector2 direction = (Vector2)target.transform.position - (Vector2)transform.position;
         float distanceThisFrame = speed * Time.deltaTime;
@@ -35,7 +45,6 @@ public class PoisonProjectile : MonoBehaviour
 
     void Explode()
     {
-        // Знаходимо всіх у радіусі вибуху (AoE)
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
 
         foreach (Collider2D col in hitEnemies)
@@ -45,23 +54,22 @@ public class PoisonProjectile : MonoBehaviour
                 Enemy e = col.GetComponent<Enemy>();
                 if (e != null)
                 {
-                    // 1. Миттєва шкода від вибуху
-                    e.TakeDamage(impactDamage);
 
-                    // 2. Накладаємо ефект отрути (якщо ще немає)
-                    if (e.gameObject.GetComponent<PoisonEffect>() == null)
+                    e.TakeDamage(impactDamage);
+                    if (e.gameObject.activeInHierarchy)
                     {
-                        PoisonEffect effect = e.gameObject.AddComponent<PoisonEffect>();
-                        effect.Initialize(poisonDamage, 4f); // 4 секунди отрути
+                        if (e.gameObject.GetComponent<PoisonEffect>() == null)
+                        {
+                            PoisonEffect effect = e.gameObject.AddComponent<PoisonEffect>();
+                            effect.Initialize(poisonDamage, 4f);
+                        }
                     }
                 }
             }
         }
-        // Тут можна додати візуальний ефект спалаху
-        Destroy(gameObject);
+        ReturnToPool();
     }
 
-    // Малюємо радіус вибуху в редакторі для зручності
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;

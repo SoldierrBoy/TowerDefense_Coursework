@@ -45,9 +45,21 @@ public class ArcherTower : MonoBehaviour
 
     void Shoot()
     {
-        GameObject arrowGO = Instantiate(arrowPrefab, firePoint.position, Quaternion.identity);
-        Arrow arrow = arrowGO.GetComponent<Arrow>();
+        // --- ЗМІНЕНО ДЛЯ OBJECT POOLING ---
+        // Замість Instantiate викликаємо наш PoolManager, щоб дістати стрілу із заначки
+        GameObject arrowGO = PoolManager.Instance.Get(arrowPrefab, firePoint.position, Quaternion.identity);
 
+        // Знаходимо твій новий базовий скрипт Projectile
+        Projectile projectileScript = arrowGO.GetComponent<Projectile>();
+
+        if (projectileScript != null)
+        {
+            // Обов'язково передаємо їй префаб, щоб стріла знала, куди повертатися при влучанні
+            projectileScript.myPrefab = arrowPrefab;
+        }
+
+        // Залишаємо вашу логіку наведення стріли на ціль
+        Arrow arrow = arrowGO.GetComponent<Arrow>();
         if (arrow != null)
         {
             arrow.Seek(currentTarget, damage);
